@@ -86,6 +86,7 @@ logs/
 config.ini
 secrets.json
 api_keys.txt
+secrets/openai_key.txt
 
 # Output directories
 output/
