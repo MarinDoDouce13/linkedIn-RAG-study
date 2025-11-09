@@ -29,9 +29,13 @@ class CVGeneratorState(TypedDict):
     
     # Output
     final_cv: str  # The complete generated CV
-    
+
     # LangGraph message handling
     messages: Annotated[List, add_messages]
+
+    # Controls
+    description_only: bool  # If True, only the description is used for generation
+    abort_generation: bool  # Set True to short-circuit and output NA
 
 
 def create_cv_generator_graph():
@@ -51,6 +55,7 @@ def create_cv_generator_graph():
     
     # Import here to avoid circular imports
     from .nodes import (
+        check_description_specificity,
         extract_job_requirements,
         generate_experience_section,
         generate_skills_section,
@@ -62,7 +67,9 @@ def create_cv_generator_graph():
     workflow = StateGraph(CVGeneratorState)
     
     # Add nodes to the workflow
+    # Validation now happens AFTER requirements extraction
     workflow.add_node("extract_requirements", extract_job_requirements)
+    workflow.add_node("check_description", check_description_specificity)
     workflow.add_node("generate_experience", generate_experience_section)
     workflow.add_node("generate_skills", generate_skills_section)
     workflow.add_node("generate_education", generate_education_section)
@@ -71,7 +78,8 @@ def create_cv_generator_graph():
     # Define the workflow edges (execution order)
     workflow.set_entry_point("extract_requirements")
     
-    workflow.add_edge("extract_requirements", "generate_experience")
+    workflow.add_edge("extract_requirements", "check_description")
+    workflow.add_edge("check_description", "generate_experience")
     workflow.add_edge("generate_experience", "generate_skills")
     workflow.add_edge("generate_skills", "generate_education")
     workflow.add_edge("generate_education", "compile_cv")

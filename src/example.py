@@ -47,18 +47,24 @@ def main():
     print("=" * 60)
     
     try:
-        # Generate the CV
-        cv = generate_cv_for_job(sample_job, api_key)
+        # Generate the CV (standard)
+        cv, _ = generate_cv_for_job(sample_job, api_key)
         
-        print("Generated CV:")
+        print("Generated CV (standard):")
         print("=" * 60)
         print(cv)
         
         # Save to file
         with open("generated_cv.txt", "w", encoding="utf-8") as f:
             f.write(cv)
-        
+
         print("\nCV saved to 'generated_cv.txt'")
+
+        # Generate the CV (description-only)
+        cv2, _ = generate_cv_for_job(sample_job, api_key, description_only=True)
+        print("\nGenerated CV (description-only mode):")
+        print("=" * 60)
+        print(cv2)
         
     except Exception as e:
         print(f"Error generating CV: {e}")

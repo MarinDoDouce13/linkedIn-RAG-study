@@ -15,7 +15,7 @@ default_model = os.getenv("DEFAULT_MODEL", "gpt-3.5-turbo")
 default_temperature = float(os.getenv("DEFAULT_TEMPERATURE", "0.1"))
 
 
-def generate_cv_for_job(job_row: dict, api_key: str = None) -> tuple[str, dict]:
+def generate_cv_for_job(job_row: dict, api_key: str = None, description_only: bool = False) -> tuple[str, dict]:
     """
     Generate a tailored CV for a specific job posting.
     
@@ -44,7 +44,10 @@ def generate_cv_for_job(job_row: dict, api_key: str = None) -> tuple[str, dict]:
         extracted_requirements={},
         cv_sections={},
         final_cv="",
-        messages=[]
+        messages=[],
+        # New controls
+        description_only=description_only,
+        abort_generation=False
     )
     
     # Run the workflow

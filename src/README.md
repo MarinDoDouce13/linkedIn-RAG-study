@@ -34,9 +34,13 @@ job_data = {
     "role_k50": "Software Developer"
 }
 
-# Generate CV
-cv = generate_cv_for_job(job_data)
+# Generate CV (standard mode)
+cv, info = generate_cv_for_job(job_data)
 print(cv)
+
+# Generate CV using description-only mode (ignores title/company/category/role)
+cv_desc_only, info2 = generate_cv_for_job(job_data, description_only=True)
+print(cv_desc_only)
 ```
 
 ### With API Key
@@ -54,6 +58,10 @@ The CV generation follows this LangGraph workflow:
 3. **Generate Skills** - Create skills section matching job requirements
 4. **Generate Education** - Create education background
 5. **Compile CV** - Combine all sections into final formatted CV
+
+When `description_only=True`:
+- A preliminary node validates that the description is sufficiently specific. If not, generation aborts and the final CV is set to `NA`.
+- Prompts in all generation nodes only use the description and extracted requirements derived from it.
 
 ## Configuration
 
